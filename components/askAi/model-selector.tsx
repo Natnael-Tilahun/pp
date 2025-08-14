@@ -29,6 +29,7 @@ import {
 
 import { Model, ModelType } from "@/components/askAi/data/models"
 import { useMutationObserver } from "@/hooks/use-mutation-observer"
+import { useModel } from "@/hooks/use-model"
 
 interface ModelSelectorProps extends PopoverProps {
   types: readonly ModelType[]
@@ -37,8 +38,8 @@ interface ModelSelectorProps extends PopoverProps {
 
 export function ModelSelector({ models, types, ...props }: ModelSelectorProps) {
   const [open, setOpen] = React.useState(false)
-  const [selectedModel, setSelectedModel] = React.useState<Model>(models[0])
-  const [peekedModel, setPeekedModel] = React.useState<Model>(models[0])
+  const { selectedModel, setSelectedModel } = useModel()
+  const [peekedModel, setPeekedModel] = React.useState<Model>(selectedModel)
 
   return (
     <div className="grid gap-2">
@@ -110,6 +111,7 @@ export function ModelSelector({ models, types, ...props }: ModelSelectorProps) {
                           onPeek={(model) => setPeekedModel(model)}
                           onSelect={() => {
                             setSelectedModel(model)
+                            setPeekedModel(model)
                             setOpen(false)
                           }}
                         />

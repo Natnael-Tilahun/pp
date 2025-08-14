@@ -27,11 +27,13 @@ import { PresetSelector } from "@/components/askAi/preset-selector"
 import { PresetShare } from "@/components/askAi/preset-share"
 import { TemperatureSelector } from "@/components/askAi/temperature-selector"
 import { TopPSelector } from "@/components/askAi/top-p-selector"
+import { ChatInterface } from "@/components/askAi/chat-interface"
 import { models, types } from "@/components/askAi/data/models"
 import { presets } from "@/components/askAi/data/presets"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
+import { ModelDisplay } from "@/components/model-display"
 
 export const metadata: Metadata = {
     title: "Playground",
@@ -70,7 +72,10 @@ export default function PlaygroundPage() {
                 </div>
                 <div className="hidden h-full flex-col md:flex px-6">
                     <div className="container flex flex-col items-start justify-between space-y-2 py-4 sm:flex-row sm:items-center sm:space-y-0 md:h-16">
-                        <h2 className="text-lg font-semibold">Playground</h2>
+                        <div className="flex items-center space-x-4">
+                            <h2 className="text-lg font-semibold">Playground</h2>
+                            <ModelDisplay />
+                        </div>
                         <div className="ml-auto flex w-full space-x-2 sm:justify-end">
                             <PresetSelector presets={presets} />
                             <PresetSave />
@@ -82,7 +87,7 @@ export default function PlaygroundPage() {
                         </div>
                     </div>
                     <Separator />
-                    <Tabs defaultValue="complete" className="flex-1">
+                    <Tabs defaultValue="chat" className="flex-1">
                         <div className="container h-full py-6">
                             <div className="grid h-full items-stretch gap-6 md:grid-cols-[1fr_200px]">
                                 <div className="hidden flex-col space-y-4 sm:flex md:order-2">
@@ -100,7 +105,21 @@ export default function PlaygroundPage() {
                                                 instructions to edit it.
                                             </HoverCardContent>
                                         </HoverCard>
-                                        <TabsList className="grid grid-cols-3">
+                                        <TabsList className="grid grid-cols-4">
+                                            <TabsTrigger value="chat">
+                                                <span className="sr-only">Chat</span>
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 20 20"
+                                                    fill="none"
+                                                    className="h-5 w-5"
+                                                >
+                                                    <path
+                                                        d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"
+                                                        fill="currentColor"
+                                                    />
+                                                </svg>
+                                            </TabsTrigger>
                                             <TabsTrigger value="complete">
                                                 <span className="sr-only">Complete</span>
                                                 <svg
@@ -269,6 +288,11 @@ export default function PlaygroundPage() {
                                     <TopPSelector defaultValue={[0.9]} />
                                 </div>
                                 <div className="md:order-1">
+                                    <TabsContent value="chat" className="mt-0 border-0 p-0">
+                                        <div className="flex h-full flex-col space-y-4 ">
+                                            <ChatInterface />
+                                        </div>
+                                    </TabsContent>
                                     <TabsContent value="complete" className="mt-0 border-0 p-0">
                                         <div className="flex h-full flex-col space-y-4">
                                             <Textarea
