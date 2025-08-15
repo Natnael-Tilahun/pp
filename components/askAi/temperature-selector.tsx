@@ -10,15 +10,27 @@ import {
 } from "@/components/ui/hover-card"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
+import { useAISettingsStore } from "@/lib/store"
 
 interface TemperatureSelectorProps {
-  defaultValue: SliderProps["defaultValue"]
+  defaultValue?: SliderProps["defaultValue"]
 }
 
 export function TemperatureSelector({
-  defaultValue,
+  defaultValue = [0.7],
 }: TemperatureSelectorProps) {
-  const [value, setValue] = React.useState(defaultValue)
+  const { temperature, setTemperature } = useAISettingsStore()
+  const [value, setValue] = React.useState<number[]>([temperature])
+
+  // Update local state when store changes
+  React.useEffect(() => {
+    setValue([temperature])
+  }, [temperature])
+
+  const handleValueChange = (newValue: number[]) => {
+    setValue(newValue)
+    setTemperature(newValue[0])
+  }
 
   return (
     <div className="grid gap-2 pt-2">
@@ -28,15 +40,15 @@ export function TemperatureSelector({
             <div className="flex items-center justify-between">
               <Label htmlFor="temperature">Temperature</Label>
               <span className="w-12 rounded-md border border-transparent px-2 py-0.5 text-right text-sm text-muted-foreground hover:border-border">
-                {value}
+                {value[0]}
               </span>
             </div>
             <Slider
               id="temperature"
-              max={1}
-              defaultValue={value}
+              max={2}
+              value={value}
               step={0.1}
-              onValueChange={setValue}
+              onValueChange={handleValueChange}
               className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4"
               aria-label="Temperature"
             />

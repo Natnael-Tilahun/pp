@@ -85,6 +85,8 @@ export function ChatInterface({
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">AI Chat</h3>
         <div className="flex items-center space-x-2">
+        <Tooltip>
+        <TooltipTrigger asChild>
           <Button
             variant="outline"
             size="sm"
@@ -93,6 +95,11 @@ export function ChatInterface({
           >
             <Trash2 className="h-4 w-4" />
           </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+                          <p>Remove Chats</p>
+                        </TooltipContent>
+                      </Tooltip>
         </div>
       </div>
 
@@ -105,7 +112,7 @@ export function ChatInterface({
         ) : (
           messages.map((message: AIMessage, index: number) => (
             <Card key={index} className={`${
-              message.role === 'user' ? 'ml-auto bg-primary text-primary-foreground' : 'mr-auto'
+              message.role === 'user' ? 'ml-auto bg-secondary text-secondary-foreground' : 'mr-auto'
             } max-w-[80%] px-4 py-4`}>
               <CardContent className='p-0'>
                 <div className="flex items-start justify-between">
@@ -126,7 +133,7 @@ export function ChatInterface({
                             size="sm"
                             onClick={() => handleResend(message.content)}
                             disabled={isLoading}
-                            className="h-6 w-6 p-0 text-primary-foreground hover:bg-primary/80"
+                            className="h-6 w-6 p-0 text-primary hover:bg-primary/80"
                           >
                             {isLoading ? (
                               <Loader2 className="h-3 w-3 animate-spin" />

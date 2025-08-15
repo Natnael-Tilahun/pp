@@ -20,6 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { useAISettingsStore } from "@/lib/store"
 
 import { Preset } from "@/components/askAi/data/presets"
 
@@ -31,6 +32,13 @@ export function PresetSelector({ presets, ...props }: PresetSelectorProps) {
   const [open, setOpen] = React.useState(false)
   const [selectedPreset, setSelectedPreset] = React.useState<Preset>()
   const router = useRouter()
+  const { setInstructions } = useAISettingsStore()
+
+  const handlePresetSelect = (preset: Preset) => {
+    setSelectedPreset(preset)
+    setOpen(false)
+    setInstructions(preset.instructions)
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen} {...props}>
@@ -55,10 +63,7 @@ export function PresetSelector({ presets, ...props }: PresetSelectorProps) {
               {presets.map((preset) => (
                 <CommandItem
                   key={preset.id}
-                  onSelect={() => {
-                    setSelectedPreset(preset)
-                    setOpen(false)
-                  }}
+                  onSelect={() => handlePresetSelect(preset)}
                 >
                   {preset.name}
                   <Check

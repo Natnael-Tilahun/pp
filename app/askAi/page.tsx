@@ -34,6 +34,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { ModelDisplay } from "@/components/model-display"
+import { Assistant } from "@/components/askAi/assistant"
 
 export const metadata: Metadata = {
     title: "Playground",
@@ -327,35 +328,7 @@ export default function PlaygroundPage() {
                                         </div>
                                     </TabsContent>
                                     <TabsContent value="edit" className="mt-0 border-0 p-0">
-                                        <div className="flex flex-col space-y-4">
-                                            <div className="grid h-full gap-6 lg:grid-cols-2">
-                                                <div className="flex flex-col space-y-4">
-                                                    <div className="flex flex-1 flex-col space-y-2">
-                                                        <Label htmlFor="input">Input</Label>
-                                                        <Textarea
-                                                            id="input"
-                                                            placeholder="We is going to the market."
-                                                            className="flex-1 lg:min-h-[580px]"
-                                                        />
-                                                    </div>
-                                                    <div className="flex flex-col space-y-2">
-                                                        <Label htmlFor="instructions">Instructions</Label>
-                                                        <Textarea
-                                                            id="instructions"
-                                                            placeholder="Fix the grammar."
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="mt-[21px] min-h-[400px] rounded-md border bg-muted lg:min-h-[700px]" />
-                                            </div>
-                                            <div className="flex items-center space-x-2">
-                                                <Button>Submit</Button>
-                                                <Button variant="secondary">
-                                                    <span className="sr-only">Show history</span>
-                                                    <RotateCcw />
-                                                </Button>
-                                            </div>
-                                        </div>
+                                        <Assistant />
                                     </TabsContent>
                                 </div>
                             </div>

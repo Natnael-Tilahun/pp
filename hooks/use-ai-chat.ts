@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { AIMessage, AIRequest, AIResponse, ChatState } from '@/lib/ai/types'
+import { useAISettingsStore } from '@/lib/store'
 
 export function useAIChat() {
   const [state, setState] = useState<ChatState>({
@@ -9,6 +10,7 @@ export function useAIChat() {
     isLoading: false,
     error: null,
   })
+  const { temperature, maxTokens, topP, instructions, setInstructions } = useAISettingsStore()
 
   const sendMessage = useCallback(async (
     content: string,
@@ -51,12 +53,23 @@ export function useAIChat() {
     }))
 
     try {
+      // Create messages array with system instruction if available
+      const messagesToSend = [...updatedMessages]
+      
+      // Add system instruction if available
+      if (instructions.trim()) {
+        messagesToSend.unshift({
+          role: 'system',
+          content: instructions.trim()
+        })
+      }
+
       const request: AIRequest = {
-        messages: updatedMessages,
+        messages: messagesToSend,
         model: options?.model || 'gemini-1.5-flash',
-        temperature: options?.temperature || 0.7,
-        maxTokens: options?.maxTokens || 2048,
-        topP: options?.topP || 0.9,
+        temperature: options?.temperature ?? temperature,
+        maxTokens: options?.maxTokens ?? maxTokens,
+        topP: options?.topP ?? topP,
       }
 
       const response = await fetch('/api/ai/gemini', {
@@ -91,7 +104,7 @@ export function useAIChat() {
         error: error instanceof Error ? error.message : 'Failed to send message',
       }))
     }
-  }, [state.messages])
+  }, [state.messages, instructions, temperature, maxTokens, topP])
 
   const clearChat = useCallback(() => {
     setState({
@@ -108,12 +121,18 @@ export function useAIChat() {
     }))
   }, [])
 
+  const updateInstructions = useCallback((newInstructions: string) => {
+    setInstructions(newInstructions)
+  }, [setInstructions])
+
   return {
     messages: state.messages,
+    instructions,
     isLoading: state.isLoading,
     error: state.error,
     sendMessage,
     clearChat,
     removeMessage,
+    updateInstructions,
   }
 }

@@ -10,13 +10,25 @@ import {
 } from "@/components/ui/hover-card"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
+import { useAISettingsStore } from "@/lib/store"
 
 interface TopPSelectorProps {
-  defaultValue: SliderProps["defaultValue"]
+  defaultValue?: SliderProps["defaultValue"]
 }
 
-export function TopPSelector({ defaultValue }: TopPSelectorProps) {
-  const [value, setValue] = React.useState(defaultValue)
+export function TopPSelector({ defaultValue = [0.9] }: TopPSelectorProps) {
+  const { topP, setTopP } = useAISettingsStore()
+  const [value, setValue] = React.useState<number[]>([topP])
+
+  // Update local state when store changes
+  React.useEffect(() => {
+    setValue([topP])
+  }, [topP])
+
+  const handleValueChange = (newValue: number[]) => {
+    setValue(newValue)
+    setTopP(newValue[0])
+  }
 
   return (
     <div className="grid gap-2 pt-2">
@@ -26,15 +38,15 @@ export function TopPSelector({ defaultValue }: TopPSelectorProps) {
             <div className="flex items-center justify-between">
               <Label htmlFor="top-p">Top P</Label>
               <span className="w-12 rounded-md border border-transparent px-2 py-0.5 text-right text-sm text-muted-foreground hover:border-border">
-                {value}
+                {value[0]}
               </span>
             </div>
             <Slider
               id="top-p"
               max={1}
-              defaultValue={value}
+              value={value}
               step={0.1}
-              onValueChange={setValue}
+              onValueChange={handleValueChange}
               className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4"
               aria-label="Top P"
             />

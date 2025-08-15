@@ -17,7 +17,8 @@ import {
   IconSearch,
   IconSettings,
   IconUsers,
-  IconSparkles
+  IconSparkles,
+  IconUser
 } from "@tabler/icons-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -48,9 +49,9 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
-      url: "/lifecycle",
-      icon: IconListDetails,
+      title: "Profiles",
+      url: "/profiles",
+      icon: IconUser,
     },
     {
       title: "Analytics",

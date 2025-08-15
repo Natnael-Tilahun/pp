@@ -30,8 +30,17 @@ export async function generateGeminiResponse(
   }
   
   try {
-    // Convert messages to the new format
-    const contents = request.messages.map(msg => ({
+    // Extract system instructions and user/assistant messages
+    const systemMessages = request.messages.filter(msg => msg.role === 'system')
+    const conversationMessages = request.messages.filter(msg => msg.role !== 'system')
+    
+    // Combine all system instructions into one
+    const systemInstruction = systemMessages.length > 0 
+      ? systemMessages.map(msg => msg.content).join('\n\n')
+      : undefined
+
+    // Convert conversation messages to the Gemini format
+    const contents = conversationMessages.map(msg => ({
       role: msg.role === 'user' ? 'user' : 'model',
       parts: [{ text: msg.content }]
     }))
@@ -39,18 +48,22 @@ export async function generateGeminiResponse(
     console.log('Sending request to Gemini:', {
       model: modelName,
       messageCount: contents.length,
+      systemInstruction: systemInstruction ? systemInstruction.substring(0, 100) + '...' : 'None',
       firstMessage: contents[0]?.parts[0]?.text?.substring(0, 100) + '...'
     })
 
-    // Generate content using the new API
+    // Generate content using the new API with system instruction
     const response = await ai.models.generateContent({
       model: modelName,
       contents,
       config: {
-        temperature: request.temperature || 0.7,
+        temperature: request.temperature || 1.1,
         topP: request.topP || 0.9,
         maxOutputTokens: request.maxTokens || 2048,
         candidateCount: 1,
+        systemInstruction: systemInstruction ? {
+          parts: [{ text: systemInstruction }]
+        } : undefined,
       },
     })
 
